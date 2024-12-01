@@ -18,8 +18,7 @@ WHERE name NOT LIKE '% %';
 
 --Название треков, которые содержат слово «мой» или «my».
 SELECT name FROM track
-WHERE LOWER(name) LIKE '%мой%' OR LOWER(name) LIKE '%my%'; 
-
+WHERE STRING_TO_ARRAY(LOWER(name), ' ') && ARRAY['мой','my']; 
 
 --Задание 3
 
@@ -35,13 +34,16 @@ WHERE a."year" BETWEEN 2019 AND 2020;
 --Средняя продолжительность треков по каждому альбому.
 SELECT AVG(time) FROM track t
 JOIN album a ON t.album_id = a.id 
-GROUP BY a.name
+GROUP BY a.name;
 
 -- Все исполнители, которые не выпустили альбомы в 2020 году. 
 SELECT ma.name FROM music_artist ma 
-JOIN music_artist_album maa ON ma.id = maa.music_artist_id 
-JOIN album a ON a.id = maa.album_id 
-WHERE a."year" != 2020
+WHERE ma.name NOT IN ( 
+    SELECT ma.name FROM music_artist ma 
+    JOIN music_artist_album maa ON ma.id = maa.music_artist_id 
+    JOIN album a ON a.id = maa.album_id 
+    WHERE a."year" = 2020 
+   );
 
 --Названия сборников, в которых присутствует конкретный исполнитель (выберите его сами).
 SELECT DISTINCT c.name FROM collection c 
@@ -49,5 +51,4 @@ JOIN track_collection tc ON c.id = tc.collection_id
 JOIN track t ON t.id = tc.track_id 
 JOIN music_artist_album maa ON t.album_id = maa.album_id 
 JOIN music_artist ma ON maa.music_artist_id = ma.id 
-WHERE ma.name = 'Deep Purple'
-
+WHERE ma.name = 'Deep Purple';

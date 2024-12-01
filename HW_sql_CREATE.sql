@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS music_artist_genre (
 CREATE TABLE IF NOT EXISTS album (
 	id SERIAL PRIMARY KEY,
 	name VARCHAR(60) NOT NULL,
-	year INTEGER NOT NULL
+	year INTEGER NOT NULL CHECK (year between 1878 and 9999)
 );
 
 CREATE TABLE IF NOT EXISTS music_artist_album (
@@ -44,4 +44,5 @@ CREATE TABLE IF NOT EXISTS track_collection (
 	collection_id INTEGER REFERENCES collection(id),
 	CONSTRAINT pk_tc PRIMARY KEY (track_id, collection_id)
 );
+
 
